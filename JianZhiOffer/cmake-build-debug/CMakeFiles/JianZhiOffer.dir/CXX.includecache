@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+H:/myLeetCodeReport/JianZhiOffer/main.cpp
+iostream
+-
+string.h
+-
+algorithm
+-
+unordered_map
+-
+map
+H:/myLeetCodeReport/JianZhiOffer/map
+
