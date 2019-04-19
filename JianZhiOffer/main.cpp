@@ -3,67 +3,154 @@
 #include <algorithm>
 #include <unordered_map>
 #include "map"
+#include <queue>
+#include <stack>
+#include <deque>
 
 using namespace std;
+vector<int> height;
+deque<int> dq;
 
-class Solution{
-public:
-    string multiply(string num1, string num2){
-        string sum(num1.size() + num2.size(), '0');
-        for(int i = num1.size() - 1; i > 0 ; i--){
-            int carry = 0;
-            for(int j = num2.size() - 1; j > 0; j--){
-                int tmp = (sum[i+j+1] - '0') + (num1[i] - '0') * (num2[j] - '0') + carry;
-                sum[i + j + 1] = tmp % 10 + '0';
-                carry = tmp / 10;
+int singleLive(){
+    int x, f, d, p;
+    int cnt = 0;
+    cin >> x >> f >> d >> p;
+    // 每日房租大于小易所有钱，直接返回0
+    if(x > d){
+        cout << 0;
+        return 0;
+    }
+    if(d >= f*x){
+        // f个水果全部吃完
+        d -= f * x;
+        cnt += f;
+        while (d > p + x){
+            cnt++;
+            d -= x;
+            d -= p;
+        }
+    }
+    else{
+        // f个水果还没吃完就已经付不起房租
+        while(d > 0){
+            if(f > 0){
+                d -= x;
+                f--;
+                cnt ++;
+            }else{
+                d -= x;
+                d -= p;
+                cnt++;
             }
-            sum[i] += carry;
         }
-        size_t start_pos = sum.find_first_not_of('0');
-        if (string::npos != start_pos) {
-            return sum.substr(start_pos);
-        }
-        return "0";
     }
+    cout << cnt;
+    return cnt;
+}
 
-};
-
-int main() {
-    long long max1, max2, max3;
-    long long  min1, min2;
-    max1 = max2 = max3 = INT32_MIN;
-    min1 = min2 = INT32_MAX;
-    int num = 0;
-    cin>>num;
-    int input;
+void crazyQueue(){
+    int num;
+    cin >> num;
+    height.resize(num);
     for(int i = 0; i < num; i++){
-        cin>>input;
-        // min1 最小
-        if(input < min1){
-            min2 = min1;
-            min1 = input;
-        }else if(input < min2){
-            min2 = input;
-        }
-        // max1 最大
-        if(input > max1){
-            max3 = max2;
-            max2 = max1;
-            max1 = input;
-        }else if(input > max2){
-            max3 = max2;
-            max2 = input;
-        }else if(num > max3){
-            max3 = input;
-        }
+        cin >> height[i];
+    }
+    std::sort(height.begin(), height.end());
+    int left = 0, right = num - 1;
+    int res = 0;
+    while(left != right){
+        int min1 = left, min2 = left + 1;
+        res += height[right] - height[min1] + height[right] - height[min2];
+        res += abs(height[min1] - height[--right]) + abs(height[min2] - height[--right]);
+        left += 2;
 
     }
-    long long res = min1 * min2 * max1 > max1 * max2 * max3 ? min1 * min2 * max1 : max1 * max2 * max3;
-    cout<<min1<<" "<< min2<<" "<<max1<<" "<<max2<<" "<<max3<<endl;
-    cout<<res;
+}
 
-    string str1, str2;
-//    while(cin>>str1 >> str2){}
-    cout<<cin<<cout<<endl;
+void strToInt(string str){
+    if(str.size() == 0){
+        cout << 0;
+        return;
+    }
+    int len = str.size(), flag = 1, i = 0;
+    int result = 0;
+    if(str[i] == '-' || str[i] == '+')
+        i++;
+    if(str[0] == '-')
+        flag = -1;
+    for(; i < len; ++i){
+
+        if(!isdigit(str[i])) {
+            cout << 0;
+            break;
+        }
+        if((result > INT32_MAX / 10 || (result == INT32_MAX/10 && (str[i] - '0') >= INT32_MAX%10)) && flag == 1){
+            cout << INT32_MAX;
+            return;
+        }
+        if((result > -(INT32_MIN / 10) || (result == -(INT32_MIN/10 ) && (str[i] - '0' >= -(INT32_MIN % 10)))) && flag == -1){
+            cout << INT32_MIN;
+            return;
+        }
+        result = result * 10 + str[i] - '0';
+    }
+    cout << result * flag <<endl;
+}
+
+// 翻转字符串
+void Reverse(char *pBegin, char *pEnd){
+    // 剑指offer char解法
+    if(pBegin == nullptr || pEnd == nullptr)
+        return;
+    while(pBegin < pEnd){
+        char tmp = *pBegin;
+        *pBegin = *pEnd;
+        *pEnd = tmp;
+        pBegin++;
+        pEnd++;
+    }
+}
+void Reverse(int start, int end, string& str){
+//    if(start == end || start < 0 || end < 0)
+//        return;
+    while(start < end){
+        auto tmp = str[start];
+        str[start] = str[end];
+        str[end] = tmp;
+
+        start++;
+        end--;
+    }
+}
+
+string ReverseSentence(string str){
+    if(str.length() <= 0)return str;
+    // int start = 0, end  = str.size() - 1;
+    // 得到整个逆置的字符串
+    std::reverse(str.begin(), str.end());
+    // 接着按照单词挨个逆置
+    int begin = 0, end = 0;
+    while(str[begin] != '\0'){
+        if(str[begin] == ' '){
+            begin++;
+            end++;
+        }else if(str[end] == ' '|| str[end] == '\0'){
+
+            begin = ++end;
+        }else
+            end++;
+    }
+    return str;
+}
+
+
+
+
+int main(){
+    strToInt("-2147483649");
+    cout << INT32_MIN <<" "<< INT32_MAX<< "" << endl;
+    cout << ReverseSentence("I am a student.") << endl;
+
     return 0;
 }
+
