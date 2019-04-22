@@ -145,12 +145,101 @@ string ReverseSentence(string str){
 
 
 
+class Solution_1{
+public:
+    vector<int, int> TwoSum(vector<int> &nums, int target){
+        unordered_map<int, int> hashmap;
+        vector<int, int> result;
+        for(int i = 0; i < nums.size(); i++){
+            int rest = target - nums[i];
+            if(hashmap.count(rest) > 0){
+                result.push_back(hashmap.at(rest));
+                result.push_back(i);
+            }
+            hashmap.insert(make_pair(nums[i], i));
+        }
+        return result;
+    }
+};
 
+
+struct ListNode{
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL){}
+};
+
+class Solution_2{
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2){
+        return addTwoNodes(l1, l2, 0);
+    }
+    ListNode* addTwoNodes(ListNode* l1,  ListNode* l2, int carry){
+        if(l1 == NULL)
+            l1 = new ListNode(0);
+        if(l2 == NULL)
+            l2 = new ListNode(0);
+        ListNode* l =new ListNode((l1->val + l2->val + carry) % 10);
+        carry = (l1->val + l2->val + carry) / 10;
+        if(l1->next != NULL || l2->next != NULL && carry != 0)
+            l -> next = addTwoNodes(l1->next, l2->next, carry);
+        return l;
+    }
+
+};
+
+class Solution_3{
+public:
+    int lengthOfLongestSubstring(string s){
+        /*
+         * HashMap 建立字符与其出现位置之间的映射
+         * */
+        if(s.length() == 0)return 0;
+        int result = 0, left = -1;
+        unordered_map<int, int> hashMap;
+        for(int i = 0; i < s.size(); ++i){
+            if(hashMap.count(s[i])&& hashMap[s[i]] > left){
+                left = hashMap[s[i]];
+            }
+            hashMap[s[i]] = i;
+            result = max(result, i - left);
+        }
+        return result;
+    }
+};
+
+class Solution_4{
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2){
+        // 有序数组的归并问题
+        vector<int> res;
+        int i = 0, j = 0;
+        while (i < nums1.size() || j < nums2.size()){
+            if(i == nums1.size())
+                res.push_back(nums2[j++]);
+            else if(j == nums2.size())
+                res.push_back(nums1[i++]);
+            else
+                nums1[i] > nums2[j] ? res.push_back(nums2[j++]): res.push_back(nums1[i++]);
+        }
+        int middle = res.size() / 2;
+        if(res.size() % 2 == 0)
+            return (double)(res[middle] + res[middle - 1]) / 2;
+        else
+            return res[middle];
+    }
+};
+
+class Solution_5{
+public:
+    string longestPalindrome(string s) {
+        
+    }
+};
 int main(){
     strToInt("-2147483649");
     cout << INT32_MIN <<" "<< INT32_MAX<< "" << endl;
     cout << ReverseSentence("I am a student.") << endl;
-
     return 0;
 }
 
